@@ -1,8 +1,9 @@
-package unicredit.handlebars
-package json4s
+package com.github.mfirry
+package handlebars.json4s
 
 import java.util.Map.Entry
-import java.util.{Set => JSet}
+import java.util.{ Set => JSet }
+import java.util.AbstractMap.SimpleImmutableEntry
 
 import scala.collection.JavaConversions._
 
@@ -19,7 +20,7 @@ class JsonNodeValueResolver extends ValueResolver {
       arr.lift(name.toInt) getOrElse UNRESOLVED
     case json: JObject =>
       val resolved = json \ name
-      if(resolved == JNothing) {
+      if (resolved == JNothing) {
         UNRESOLVED
       } else {
         resolved
@@ -28,19 +29,11 @@ class JsonNodeValueResolver extends ValueResolver {
       UNRESOLVED
   }
 
-  // def resolve(json: JValue): AnyRef = json match {
-  //   case JArray(xs) => xs
-  //   case JString(string) => string
-  //   // case JObject(object) => object
-  //   case JBool(bool) => bool
-  //   case JDouble(double) => double
-  //   case JDecimal(decimal) => decimal
-  //   case JNull => null
-  //   case JNothing => null
-  // }
+  private def blah(jfield: (String, JValue)): Entry[String, AnyRef] = new SimpleImmutableEntry(jfield._1, resolve(jfield._2, jfield._1))
 
   def propertySet(context: AnyRef): JSet[Entry[String, AnyRef]] = context match {
-    case JObject(obj) => ???
+    case JObject(obj) =>
+      obj map blah toSet : Set[Entry[String, AnyRef]]
     case _ => Set.empty[Entry[String, AnyRef]]
   }
 }
