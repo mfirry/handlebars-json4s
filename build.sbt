@@ -1,5 +1,7 @@
 name := "handlebars-json4s"
 
+organization := "mfirry"
+
 version := "0.0.1-SNAPSHOT"
 
 scalaVersion := "2.10.2"
@@ -10,3 +12,13 @@ libraryDependencies ++= Seq(
 	"com.github.jknack" % "handlebars" % "1.1.2",
 	"org.json4s" %% "json4s-jackson" % "3.2.5"
 )
+
+pomIncludeRepository := { x => false }
+
+publishTo <<= version { (v: String) =>
+  val nexus = "http://riemann:8081/nexus/"
+  //Some("thirdparty" at nexus + "content/repositories/thirdparty")
+  Some("snapshots" at nexus + "content/repositories/snapshots")
+}
+
+credentials+= Credentials(Path.userHome / ".ivy2" / ".credentials")

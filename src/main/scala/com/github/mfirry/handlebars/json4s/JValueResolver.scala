@@ -38,4 +38,6 @@ class JValueResolver extends ValueResolver {
   }
 }
 
-object INSTANCE
+object JValueResolver {
+  val INSTANCE = new JValueResolver()
+}
