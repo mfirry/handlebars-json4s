@@ -11,6 +11,7 @@ import com.github.jknack.handlebars.ValueResolver
 import com.github.jknack.handlebars.ValueResolver._
 
 import org.json4s._
+import org.json4s.JValue
 import org.json4s.jackson.JsonMethods._
 
 class JValueResolver extends ValueResolver {
@@ -18,14 +19,25 @@ class JValueResolver extends ValueResolver {
   def resolve(context: AnyRef, name: String): AnyRef = context match {
     case JArray(arr) =>
       arr.lift(name.toInt) getOrElse UNRESOLVED
-    case json: JObject =>
-      val resolved = json \ name
+    case json: JValue =>
+      val resolved: JValue = json \ name
       resolved match {
         case JNothing => UNRESOLVED
-        case _ => resolved
+        case _ => resolve(resolved)
       }
-    case _ =>
-      UNRESOLVED
+    case _ => UNRESOLVED
+  }
+
+  def resolve(context: JValue): AnyRef = context match {
+    case JNothing => null
+    case JNull => null
+    case JString(s) => s
+    case JDouble(num) => Double.box(num)
+    case JDecimal(num) => num
+    case JInt(num) => num
+    case JBool(value) => Boolean.box(value)
+    case JObject(obj) => obj
+    case JArray(arr) => arr
   }
 
   private def unpack(jfield: (String, JValue)): Entry[String, AnyRef] =
