@@ -10,7 +10,8 @@ scalacOptions ++= Seq("-feature", "-language:postfixOps")
 
 libraryDependencies ++= Seq(
 	"com.github.jknack" % "handlebars" % "1.1.2",
-	"org.json4s" %% "json4s-jackson" % "3.2.5"
+	"org.json4s" %% "json4s-jackson" % "3.2.5",
+	"org.specs2" %% "specs2" % "2.3.4" % "test"
 )
 
 pomIncludeRepository := { x => false }
