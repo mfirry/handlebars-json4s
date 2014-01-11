@@ -15,11 +15,3 @@ libraryDependencies ++= Seq(
 )
 
 pomIncludeRepository := { x => false }
-
-publishTo <<= version { (v: String) =>
-  val nexus = "http://riemann:8081/nexus/"
-  //Some("thirdparty" at nexus + "content/repositories/thirdparty")
-  Some("snapshots" at nexus + "content/repositories/snapshots")
-}
-
-credentials+= Credentials(Path.userHome / ".ivy2" / ".credentials")
