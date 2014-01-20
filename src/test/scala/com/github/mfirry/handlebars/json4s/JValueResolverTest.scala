@@ -13,17 +13,18 @@ class JValueResolverTest extends Specification {
 
    val handlebars = new Handlebars()
 
-   "Parsing json" should {
-      "produce the expected output" in {
-          val json = ("string" -> "abc") ~
-            ("int" -> 678) ~ ("long" -> 6789L) ~
-            ("float" -> 7.13f) ~
-            ("double" -> 3.14d) ~ ("bool" -> true)
+  "Parsing json" should {
+    "produce the expected output" in {
+      val json = ("string" -> "abc") ~
+        ("int" -> 678) ~ ("long" -> 6789L) ~
+        ("float" -> 7.13f) ~
+        ("double" -> 3.14d) ~ ("bool" -> true)
 
-          val context = Context.newBuilder(json).resolver(JValueResolver.INSTANCE).build
-          val template = handlebars.compileInline("{{string}} {{int}} {{long}} {{float}} {{double}} {{bool}}")
+        val context = Context.newBuilder(json).resolver(JValueResolver.INSTANCE).build
 
-          template.apply(context) must be_==("abc 678 6789 7.130000114440918 3.14 true")
+        val template = handlebars.compileInline("{{string}} {{int}} {{long}} {{float}} {{double}} {{bool}}")
+
+        template.apply(context) must be_==("abc 678 6789 7.130000114440918 3.14 true")
       }
-   }
+    }
   }
