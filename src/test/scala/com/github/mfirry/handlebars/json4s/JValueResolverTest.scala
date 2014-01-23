@@ -26,5 +26,8 @@ class JValueResolverTest extends Specification {
 
         template.apply(context) must be_==("abc 678 6789 7.130000114440918 3.14 true")
       }
+    "null must be resolved to UNRESOLVED" in {
+       JValueResolver.INSTANCE.resolve(null, "nothing") must be_==(com.github.jknack.handlebars.ValueResolver.UNRESOLVED)
+      }      
     }
   }
