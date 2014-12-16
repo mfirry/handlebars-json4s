@@ -17,27 +17,30 @@ import org.json4s.jackson.JsonMethods._
 class JValueResolver extends ValueResolver {
 
   def resolve(context: AnyRef, name: String): AnyRef = context match {
-    case JArray(arr) =>
-      arr.lift(name.toInt) getOrElse UNRESOLVED
+    case JArray(array) =>
+      array.lift(name.toInt) getOrElse UNRESOLVED
     case json: JValue =>
-      val resolved: JValue = json \ name
-      resolved match {
+      (json \ name) match {
         case JNothing => UNRESOLVED
-        case _ => resolve(resolved)
+        case _ => resolve(json \ name)
       }
     case _ => UNRESOLVED
   }
 
-  def resolve(context: JValue): AnyRef = context match {
-    case JNothing => null
-    case JNull => null
-    case JString(s) => s
-    case JDouble(num) => Double.box(num)
-    case JDecimal(num) => num
-    case JInt(num) => num
-    case JBool(value) => Boolean.box(value)
-    case JObject(obj) => obj
-    case JArray(arr) => arr
+  def resolve(context: Any): AnyRef = context match {
+    case c: JValue =>
+      c match {
+        case JNothing => null
+        case JNull => null
+        case JString(s) => s
+        case JDouble(num) => Double.box(num)
+        case JDecimal(num) => num
+        case JInt(num) => num
+        case JBool(bool) => Boolean.box(bool)
+        case JObject(obj) => obj
+        case JArray(array) => array
+      }
+    case _ => throw new ClassCastException
   }
 
   private def unpack(jfield: (String, JValue)): Entry[String, AnyRef] =
@@ -45,7 +48,7 @@ class JValueResolver extends ValueResolver {
 
   def propertySet(context: AnyRef): JSet[Entry[String, AnyRef]] = context match {
     case JObject(obj) =>
-      obj map unpack toSet : Set[Entry[String, AnyRef]]
+      obj map unpack toSet: Set[Entry[String, AnyRef]]
     case _ => Set.empty[Entry[String, AnyRef]]
   }
 }
